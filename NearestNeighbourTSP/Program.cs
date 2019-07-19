@@ -10,17 +10,19 @@ namespace NearestNeighbourTSP
 {
     class Program
     {
-        public static List<String> toFile = new List<String>();
+        Values values;
 
         static void Main(string[] args)
         {
             string pathFile = @"TSP\kroA100.tsp";
             Graph.Point [] points = TSPFileReader.ReadTspFile(pathFile);
             Graph.Graph graph = new Graph.Graph(points);
+
             Console.WriteLine("Start Algorithm:");
-            toFile.Add("Nearest Neighbour Algorithm for " + pathFile);
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            values - new Values(pathFile,"NN");
+
+            values.StarTime();
+
             double bestLength;
             for (int i = 0; i < graph.dimension; i++)
             {
@@ -28,22 +30,22 @@ namespace NearestNeighbourTSP
                 if(i == 0)
                 {
                     bestLength = pathLength;
-                    toFile.Add("-|New best |" + i + "|" + pathLength);
+                    Values.AddNewValues(i, pathLength);
                 } 
                 
                 if(pathLength < bestLength)
                 {
                     bestLength = pathLength;
-                    toFile.Add("New best |" + i + "|" + pathLength);
+                    Values.AddNewValues(i, pathLength);
                 }
                 
                 Console.WriteLine("For vertex {0} path is: {1}", i, pathLength);
             }
-            stopWatch.Stop();
-            TimeSpan ts = stopWatch.Elapsed;
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-            toFile.Add("Time: " + elapsedTime);
-            SaveToFile(toFile, "NN", "kroA100");
+
+
+            values.StopTime();
+            Console.WriteLine("End");
+
             Console.ReadLine();
 
         }
@@ -87,19 +89,6 @@ namespace NearestNeighbourTSP
             pathLength += graph.edgeWeight[actualPoint, startPoint];
 
             return pathLength;
-        }
-
-        public static void SaveToFile(List<String> tofile, string algorithm, string startFile)
-        {
-            DateTime dt = DateTime.Now;
-            string fileName = String.Format("{0:y yy yyy yyyy}", dt) + "-" + algorithm + "-" + startFile;
-            using (StreamWriter sw = new StreamWriter(@"Files\"+ fileName +".txt"))
-            {
-                foreach (string line in tofile)
-                {
-                    sw.WriteLine(line);
-                }
-            }
         }
    
     }
